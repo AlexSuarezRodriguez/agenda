@@ -1,9 +1,17 @@
 const express = require('express');
+const morgan = require('morgan');
 
 const app= express();
+// app.use(morgan('dev'))
 app.use(express.json())
 
-const persons=[
+morgan.token('body', (req, res) => {
+  if(req.method==="POST"){
+    return JSON.stringify(req.body)
+  }
+});
+  app.use(morgan(':method :url :status :response-time ms - :res[content-length] :body '));
+let persons=[
   {
     id:1,
     name: "arto Hellas",
@@ -49,40 +57,32 @@ app.get('/api/persons/:id',(req,res)=>{
 
 app.delete('/api/persons/:id',(req,res)=>{
   const id=req.params.id;
-  const person = persons.find(person => person.id===Number(id));
+  const person = persons.find(person => person.id === Number(id));
 
   if(!person){
-    res.status(404).json({message:'archivo no existente'})
+    res.status(404).json({message:'usuario no existe'})
   }else{
-    res.json(person)
+    persons=persons.filter(person=>person.id !== Number(id))
+    res.json(persons)
   }
 })
 
 app.post('/api/persons',(req,res)=>{
-  
-  let randonId =Math.floor(Math.random() * 100000) + 1;
-  const newPerson ={
-    id:randonId,
-    name: "pepito",
-    number: "39-23-6423122"
-  }
- 
-  const valided=persons.find(person=>person.name===newPerson.name)
+  const newPerson=req.body;
+  const id=Math.floor(Math.random() * 100000) + 1;
 
-  if (valided===undefined && newPerson.name!="" && newPerson.number!=""){
-      res.json(newPerson)
-  }else{
-    if(valided!==undefined &&newPerson.number==""){
-      res.status(404).json({error:'not name in new document and not number in new document'})
-    }
-    else if(newPerson.name==""){
-      res.status(404).json({error:'not name in new document'})
-    }else if(newPerson.number==""){
-      res.status(404).json({error:'not number in new document'})
-    }else if(valided!==undefined){
-      res.status(404).json({error:'name must be unique'})
-    }
-  }  
+  if (!newPerson.name) {
+    res.status(404).json({ message: `Name is empty` })
+  } else if(!newPerson.number){
+    res.status(404).json({ message: `Number is empty` })
+  }else if (persons.find(element => element.name === newPerson.name)) {
+    res.status(404).json({ message: `Name already exists` });
+  } else {
+    newreg={...newPerson,"id":id};
+    persons.push(newreg)
+    res.json(persons)
+    res.status(201)  
+  };
 })
 
 const port= process.env.PORT || 3001;
