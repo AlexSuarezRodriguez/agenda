@@ -1,0 +1,26 @@
+{
+  "name": "agenda",
+  "version": "1.0.0",
+  "description": "agenda",
+  "main": "App.js",
+  "scripts": {
+    "start": "node App.js",
+    "dev": "nodemon App.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlexSuarezRodriguez/agenda.git"
+  },
+  "author": "alexander suarez & julian salamanca",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AlexSuarezRodriguez/agenda/issues"
+  },
+  "homepage": "https://github.com/AlexSuarezRodriguez/agenda#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.15"
+  },
+  "dependencies": {
+    "express": "^4.17.3"
+  }
+}
